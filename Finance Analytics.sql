@@ -1,7 +1,8 @@
+'''SQL'''
 # Generate a Gross sales report of individual product sales (aggregated on a month basics at the product level) for croma india customers for FY 2021
 # report shall have month, product name and variant, sold qunatity, gross price per item gross price total, variants
 
-#creating a function to calculate fiscal year
+# creating a function to calculate fiscal year
 	CREATE DEFINER=`root`@`localhost` FUNCTION `get_fiscal_year`(
 	calender_date date
 	 ) RETURNS int
@@ -38,17 +39,16 @@ where c.customer_code = 90002002 and get_fiscal_year(sm.date)= 2021
     # fiscal date
     
     CREATE DEFINER=`root`@`localhost` FUNCTION `get_fiscal_date`(
-calender_date date
-) RETURNS int
+	calender_date date
+	) RETURNS int
     DETERMINISTIC
-BEGIN
+    BEGIN
 	declare fiscal_date int;
 	set fiscal_date = date_add(calender_date,  interval 4 month );
-	
-RETURN fiscal_date;
-END
+    RETURN fiscal_date;
+    END
 
-# Gross Monthly total sales report for croma
+# Gross Monthly total sales report for Croma
 
 # As a product owner, I need an aggregate monthly gross sales report for croma India customer so that i can track how much sales this particular customer is generating
 # for AtliQ and manage relationships with them accordingly
@@ -81,13 +81,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `get gross sales report for customer
 c_code text
 )
 BEGIN
-		select  date ,sum(sm.sold_quantity * gp.gross_price) as total_gross_price
+	select  date ,sum(sm.sold_quantity * gp.gross_price) as total_gross_price
 	from fact_sales_monthly sm
 	join fact_gross_price gp on gp.product_code = sm.product_code and gp.fiscal_year = get_fiscal_year(sm.date)
 	join dim_customer c using(customer_code)
 	where find_in_set (c.customer_code , c_code )> 0
 	group by date;
-	END
+END
     
 # creating a stored procedure involving control functions like if statements and classify if the total sales > 5 M as Gold else Silver
 
